@@ -1,0 +1,149 @@
+<div class="container custom-card mt-3" >
+    <div class="row" >
+        <h1 class="text-center fw-bold">Update Invoice</h1>
+        <div class="col-md-4">
+            <p class="fw-bold">
+                Invoice Number:
+                <span class="text-dark">{{ invoiceData.invoiceNumber }}</span>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p class="fw-bold">
+                Date: <span class="text-dark">{{ invoiceData.curDate }}</span>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p class="fw-bold">
+                Customer Name:
+                <span class="text-dark">{{ invoiceData.customerName }}</span>
+            </p>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped mt-5" class="table table-bordered table-striped table-3d mt-5 mx-auto">
+        <thead class="table-light">
+            <tr class="text-center table-success">
+                <th scope="col">Items</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Sub Total</th>
+                <th scope="col">GST</th>
+                <th scope="col">Tax Amount</th>
+                <th scope="col">Total Amount</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let row of rows; let i = index">
+                <tr>
+                    <td>
+                        <div class="form-group small-form-field">
+                            <select class="form-control" [(ngModel)]="row.name" (change)="onItemSelect(row.name, row)"
+                                required>
+                                <option *ngFor="let itm of items" [value]="itm.name">
+                                    {{ itm.name }}
+                                </option>
+                            </select>
+                            <div *ngIf="!row.name && isSubmitButtonDisabled()" class="text-danger">
+                                Item is required
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" [(ngModel)]="row.currentQuantity"
+                            (input)="updateTotalAmount(row)" required min="1" />
+                        <div *ngIf="
+
+                  (!row.currentQuantity || row.currentQuantity < 1) &&  
+                  isSubmitButtonDisabled()
+                " class="text-danger">
+                            Quantity must be at least 1
+                        </div>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" [(ngModel)]="row.currentUnitPrice"
+                            (input)="updateTotalAmount(row)" required min="0.01" />
+                        <div *ngIf="
+                  (!row.currentUnitPrice || row.currentUnitPrice < 0.01) &&
+                  isSubmitButtonDisabled()
+                " class="text-danger">
+                            Price must be greater than 0
+                        </div>
+                    </td>
+                    <td>
+                        {{
+                        updateTotalAmount(row)
+                        | currency : "INR" : "symbol-narrow" : "1.2-2"
+                        }}
+                    </td>
+                    <td>5%</td>
+                    <td>
+                        {{
+                        calculateTaxAmount(row)
+                        | currency : "INR" : "symbol-narrow" : "1.2-2"
+                        }}
+                    </td>
+                    <td>
+                        {{
+                        calculateTotalAmountWithTax(row)
+                        | currency : "INR" : "symbol-narrow" : "1.2-2"
+                        }}
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-danger btn-sm" (click)="deleteRow(row)">
+                            delete
+                        </button>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <p class="fw-bold">Subtotal:</p>
+            </div>
+            <div class="col-md-8">
+                <p class="text-dark">
+                    {{
+                    calculateOverallSubtotal()
+                    | currency : "INR" : "symbol-narrow" : "1.2-2"
+                    }}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p class="fw-bold">Tax Amount:</p>
+            </div>
+            <div class="col-md-8">
+                <p class="text-dark">
+                    {{
+                    calculateOverallGstAmount()
+                    | currency : "INR" : "symbol-narrow" : "1.2-2"
+                    }}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p class="fw-bold">Total Amount:</p>
+            </div>
+            <div class="col-md-8">
+                <p class="text-dark">
+                    {{
+                    calculateOverallTotalAmount()
+                    | currency : "INR" : "symbol-narrow" : "1.2-2"
+                    }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary me-2" (click)="addRow()">Add Row</button>
+            <button class="btn btn-secondary" (click)="updateInvoice(invoiceId)" [disabled]="isSubmitButtonDisabled()">
+                <a style="text-decoration: none;color:white;" href="#">Update</a>
+            </button>
+        </div>
+    </div>
+</div>

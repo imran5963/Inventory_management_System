@@ -1,0 +1,17 @@
+
+<div class="container">
+  <h2>Customer </h2>
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">ItemName</label>
+      <input type="text" class="form-control" id="name"  formControlName="name">
+      <div *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched" class="text-danger">
+        Name is required.
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="itemForm.invalid">Add Item</button>
+    <div *ngIf="itemForm.invalid && itemForm.touched" class="text-danger">
+      Please fill in all required fields.
+    </div>
+  </form>
+</div>

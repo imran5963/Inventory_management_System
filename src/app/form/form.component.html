@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>Customer </h2>
+  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Customer Name</label>
+      <input type="text" class="form-control" id="customerName" formControlName="customerName">
+      <div *ngIf="customerForm.get('customerName')?.invalid && customerForm.get('customerName')?.touched" class="text-danger">
+        Name is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="mail" formControlName="mail">
+      <div *ngIf="customerForm.get('mail')?.invalid && customerForm.get('mail')?.touched" class="text-danger">
+         Email  is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="mobile">Mobile</label>
+      <input type="tel" class="form-control" id="mobile" formControlName="mobile">
+      <div *ngIf="customerForm.get('mobile')?.invalid && customerForm.get('mobile')?.touched" class="text-danger">
+        Mobile number is required.
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Add</button>
+    <div *ngIf="customerForm.invalid && customerForm.touched" class="text-danger">
+      Please fill in all required fields.
+    </div>
+  </form>
+</div>
